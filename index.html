@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Munnu 💕 Tinu ji</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Munnu 💍 Tinu ji</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;600;700&display=swap');
 
@@ -24,19 +24,24 @@
       background: var(--deep);
       color: #fff;
       overflow-x: hidden;
-      cursor: none;
+      /* cursor:none only on desktop */
     }
 
-    /* ─── Custom cursor ─── */
-    #cursor {
-      position: fixed; width: 24px; height: 24px;
-      background: radial-gradient(circle, #ff6b9d, #e63462);
-      border-radius: 50%; pointer-events: none; z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: transform .1s, width .2s, height .2s;
-      box-shadow: 0 0 10px #ff6b9d88;
+    /* ─── Custom cursor (desktop only) ─── */
+    @media (hover: hover) and (pointer: fine) {
+      body { cursor: none; }
+      #cursor {
+        position: fixed; width: 24px; height: 24px;
+        background: radial-gradient(circle, #ff6b9d, #e63462);
+        border-radius: 50%; pointer-events: none; z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width .2s, height .2s;
+        box-shadow: 0 0 10px #ff6b9d88;
+        display: block;
+      }
+      #cursor.big { width: 50px; height: 50px; background: radial-gradient(circle, #ff6b9d88, transparent); }
     }
-    #cursor.big { width: 50px; height: 50px; background: radial-gradient(circle, #ff6b9d88, transparent); }
+    #cursor { display: none; }
 
     /* ─── Starfield canvas ─── */
     #starfield {
@@ -46,8 +51,9 @@
 
     /* ─── Floating hearts ─── */
     .float-heart {
-      position: fixed; pointer-events: none; z-index: 1;
-      font-size: 20px; animation: floatUp 4s ease-in forwards;
+      position: fixed; pointer-events: none; z-index: 3;
+      font-size: 22px; animation: floatUp 4s ease-in forwards;
+      user-select: none;
     }
     @keyframes floatUp {
       0%   { transform: translateY(0) scale(1); opacity: 1; }
@@ -57,9 +63,11 @@
     /* ─── Sections ─── */
     section {
       position: relative; z-index: 2;
-      min-height: 100vh; display: flex;
+      min-height: 100svh; display: flex;
       flex-direction: column; align-items: center; justify-content: center;
-      padding: 60px 20px; text-align: center;
+      padding: 80px 20px 60px;
+      padding-bottom: max(60px, env(safe-area-inset-bottom));
+      text-align: center;
     }
 
     /* ─── Hero ─── */
@@ -68,7 +76,7 @@
     }
     #hero h1 {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(3rem, 10vw, 7rem);
+      font-size: clamp(3.2rem, 14vw, 7rem);
       color: #fff;
       text-shadow: 0 0 30px #ff6b9d, 0 0 60px #e63462;
       animation: pulse 3s ease-in-out infinite;
@@ -78,15 +86,24 @@
       0%,100% { text-shadow: 0 0 30px #ff6b9d, 0 0 60px #e63462; }
       50%      { text-shadow: 0 0 60px #ff6b9d, 0 0 120px #e63462, 0 0 180px #f7c59f; }
     }
-    #hero p { color: #f7c59f; font-size: 1.2rem; margin-top: 16px; opacity: .9; }
+    #hero p { color: #f7c59f; font-size: clamp(1rem, 4vw, 1.2rem); margin-top: 16px; opacity: .9; padding: 0 12px; }
     .scroll-hint {
-      position: absolute; bottom: 30px;
-      animation: bounce 2s infinite;
-      font-size: 2rem;
+      position: absolute; bottom: max(30px, env(safe-area-inset-bottom, 20px));
+      animation: bounce 2s infinite; font-size: 2rem;
     }
     @keyframes bounce {
       0%,100% { transform: translateY(0); }
       50%      { transform: translateY(-12px); }
+    }
+
+    /* ─── Tap ripple ─── */
+    .ripple {
+      position: fixed; border-radius: 50%; pointer-events: none; z-index: 2;
+      background: radial-gradient(circle, rgba(255,107,157,.5), transparent);
+      transform: scale(0); animation: rippleOut .6s ease-out forwards;
+    }
+    @keyframes rippleOut {
+      to { transform: scale(6); opacity: 0; }
     }
 
     /* ─── Story section ─── */
@@ -95,8 +112,8 @@
       background: rgba(255,107,157,.08);
       border: 1px solid rgba(255,107,157,.3);
       border-radius: 20px;
-      padding: 40px;
-      max-width: 700px;
+      padding: clamp(24px, 5vw, 40px);
+      max-width: 700px; width: 100%;
       backdrop-filter: blur(10px);
       opacity: 0; transform: translateY(40px);
       transition: opacity .8s, transform .8s;
@@ -104,75 +121,110 @@
     .story-card.visible { opacity: 1; transform: translateY(0); }
     .story-card h2 {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-size: clamp(2rem, 8vw, 3.5rem);
       color: #ff6b9d; margin-bottom: 16px;
     }
-    .story-card p { color: #f0d0e8; line-height: 1.9; font-size: 1.05rem; }
+    .story-card p { color: #f0d0e8; line-height: 1.9; font-size: clamp(.95rem, 3.5vw, 1.05rem); }
 
     /* ─── Reasons ─── */
     #reasons { background: linear-gradient(180deg, #1a0526 0%, #230033 100%); }
     #reasons h2 {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(2.5rem, 7vw, 4.5rem);
-      color: #ff6b9d; margin-bottom: 40px;
+      font-size: clamp(2.5rem, 9vw, 4.5rem);
+      color: #ff6b9d; margin-bottom: 32px;
     }
     .reasons-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px; max-width: 900px; width: 100%;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 42vw), 1fr));
+      gap: 14px; max-width: 900px; width: 100%;
     }
     .reason-card {
       background: rgba(255,107,157,.07);
       border: 1px solid rgba(255,107,157,.25);
-      border-radius: 16px; padding: 28px 20px;
-      cursor: pointer; transition: transform .3s, box-shadow .3s, background .3s;
+      border-radius: 16px;
+      padding: clamp(18px, 4vw, 28px) clamp(14px, 3vw, 20px);
+      cursor: pointer;
       opacity: 0; transform: scale(.9);
       transition: opacity .6s, transform .6s, box-shadow .3s, background .3s;
+      -webkit-tap-highlight-color: transparent;
+      active-state: none;
     }
     .reason-card.visible { opacity: 1; transform: scale(1); }
-    .reason-card:hover {
-      transform: scale(1.06) rotate(-1deg);
-      background: rgba(255,107,157,.18);
-      box-shadow: 0 8px 32px #ff6b9d44;
+    @media (hover: hover) {
+      .reason-card:hover {
+        transform: scale(1.06) rotate(-1deg);
+        background: rgba(255,107,157,.18);
+        box-shadow: 0 8px 32px #ff6b9d44;
+      }
     }
-    .reason-card .icon { font-size: 2.4rem; margin-bottom: 12px; }
-    .reason-card p { color: #f0d0e8; font-size: .95rem; }
+    .reason-card:active {
+      transform: scale(.95);
+      background: rgba(255,107,157,.2);
+    }
+    .reason-card .icon { font-size: clamp(2rem, 6vw, 2.4rem); margin-bottom: 10px; }
+    .reason-card p { color: #f0d0e8; font-size: clamp(.82rem, 3vw, .95rem); }
 
     /* ─── Memory gallery ─── */
     #gallery { background: linear-gradient(180deg, #230033 0%, #0d0015 100%); }
     #gallery h2 {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(2.5rem, 7vw, 4.5rem);
-      color: #ff6b9d; margin-bottom: 40px;
+      font-size: clamp(2.5rem, 9vw, 4.5rem);
+      color: #ff6b9d; margin-bottom: 28px;
     }
+    .gallery-wrapper { position: relative; width: 100%; max-width: 900px; }
     .gallery-track {
-      display: flex; gap: 20px;
-      overflow-x: auto; max-width: 900px;
-      padding-bottom: 16px; scroll-snap-type: x mandatory;
+      display: flex; gap: 16px;
+      overflow-x: auto; width: 100%;
+      padding: 4px 4px 16px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
-    .gallery-track::-webkit-scrollbar { height: 4px; }
-    .gallery-track::-webkit-scrollbar-thumb { background: #ff6b9d55; border-radius: 2px; }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    /* Swipe arrow hints on mobile */
+    .swipe-hint {
+      display: none;
+      align-items: center; justify-content: center;
+      gap: 6px; color: rgba(255,107,157,.6);
+      font-size: .82rem; margin-top: 10px; letter-spacing: .04em;
+    }
+    @media (max-width: 600px) { .swipe-hint { display: flex; } }
+    /* Gallery dot indicators */
+    .gallery-dots {
+      display: flex; justify-content: center; gap: 8px; margin-top: 14px;
+    }
+    .gallery-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,107,157,.3); transition: background .3s, transform .3s;
+    }
+    .gallery-dot.active { background: #ff6b9d; transform: scale(1.4); }
     .memory-card {
-      min-width: 220px; height: 280px;
+      min-width: min(220px, 75vw); height: clamp(240px, 50vw, 280px);
       background: rgba(255,107,157,.1);
       border: 1px solid rgba(255,107,157,.3);
-      border-radius: 16px; scroll-snap-align: start;
+      border-radius: 16px; scroll-snap-align: center;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 20px; cursor: pointer;
       transition: transform .3s;
       position: relative; overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
     }
     .memory-card::before {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(255,107,157,.15), transparent);
       opacity: 0; transition: opacity .3s;
     }
-    .memory-card:hover { transform: translateY(-8px) scale(1.03); }
-    .memory-card:hover::before { opacity: 1; }
-    .memory-card .mem-emoji { font-size: 3rem; margin-bottom: 12px; }
-    .memory-card h3 { color: #ff6b9d; font-size: 1rem; margin-bottom: 8px; }
-    .memory-card p { color: #f0d0e8; font-size: .85rem; }
+    @media (hover: hover) {
+      .memory-card:hover { transform: translateY(-8px) scale(1.03); }
+      .memory-card:hover::before { opacity: 1; }
+    }
+    .memory-card:active { transform: scale(.97); }
+    .memory-card:active::before { opacity: 1; }
+    .memory-card .mem-emoji { font-size: clamp(2.4rem, 7vw, 3rem); margin-bottom: 12px; }
+    .memory-card h3 { color: #ff6b9d; font-size: clamp(.9rem, 3.5vw, 1rem); margin-bottom: 8px; }
+    .memory-card p { color: #f0d0e8; font-size: clamp(.78rem, 3vw, .85rem); }
 
     /* ─── Big Question ─── */
     #question {
@@ -180,36 +232,70 @@
     }
     #question .q-title {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(3rem, 10vw, 6rem);
+      font-size: clamp(2.8rem, 12vw, 6rem);
       color: #fff;
       text-shadow: 0 0 30px #ff6b9d;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       animation: pulse 3s ease-in-out infinite;
     }
-    #question .q-subtitle {
-      color: #f7c59f; font-size: 1.3rem; margin-bottom: 50px;
+    #question .q-ring {
+      font-size: clamp(3rem, 14vw, 5rem);
+      animation: ringBounce 1.5s ease-in-out infinite;
+      margin-bottom: 16px;
     }
-    .answer-btns { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    @keyframes ringBounce {
+      0%,100% { transform: translateY(0) rotate(-5deg); }
+      50%      { transform: translateY(-14px) rotate(5deg); }
+    }
+    #question .q-subtitle {
+      color: #f7c59f;
+      font-size: clamp(1rem, 4.5vw, 1.3rem);
+      margin-bottom: 40px;
+      padding: 0 10px;
+      line-height: 1.6;
+    }
+    .answer-btns {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      width: 100%; max-width: 500px;
+    }
     .btn-yes {
       background: linear-gradient(135deg, #e63462, #ff6b9d);
-      color: #fff; border: none; padding: 18px 48px;
-      font-family: 'Quicksand', sans-serif; font-size: 1.4rem; font-weight: 700;
+      color: #fff; border: none;
+      padding: clamp(14px,4vw,18px) clamp(28px,8vw,48px);
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1.1rem, 5vw, 1.4rem); font-weight: 700;
       border-radius: 50px; cursor: pointer;
       box-shadow: 0 0 30px #ff6b9d66;
       transition: transform .2s, box-shadow .2s;
+      flex: 1; min-width: 140px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    .btn-yes:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 60px #ff6b9daa;
+    .btn-yes:active { transform: scale(.96); }
+    @media (hover: hover) {
+      .btn-yes:hover { transform: scale(1.1); box-shadow: 0 0 60px #ff6b9daa; }
     }
     .btn-no {
       background: transparent;
       color: #ff6b9d; border: 2px solid #ff6b9d;
-      padding: 18px 48px;
-      font-family: 'Quicksand', sans-serif; font-size: 1.4rem; font-weight: 700;
+      padding: clamp(14px,4vw,18px) clamp(28px,8vw,48px);
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1.1rem, 5vw, 1.4rem); font-weight: 700;
       border-radius: 50px; cursor: pointer;
-      transition: transform .2s, left .3s, top .3s;
-      position: relative;
+      transition: transform .2s, background .2s;
+      flex: 1; min-width: 140px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .btn-no.shaking {
+      animation: shake .4s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%  { transform: translateX(-10px) rotate(-3deg); }
+      40%  { transform: translateX(10px)  rotate(3deg); }
+      60%  { transform: translateX(-8px)  rotate(-2deg); }
+      80%  { transform: translateX(8px)   rotate(2deg); }
     }
 
     /* ─── Celebration overlay ─── */
@@ -217,25 +303,40 @@
       display: none; position: fixed; inset: 0;
       background: rgba(13,0,21,.95); z-index: 1000;
       flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 40px;
+      text-align: center;
+      padding: clamp(24px, 6vw, 40px);
+      padding-bottom: max(40px, env(safe-area-inset-bottom));
     }
     #celebration.show { display: flex; }
     #celebration h1 {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(3rem, 10vw, 6rem);
+      font-size: clamp(2.8rem, 12vw, 6rem);
       color: #ff6b9d;
       text-shadow: 0 0 40px #ff6b9d, 0 0 80px #e63462;
       animation: pulse 2s infinite;
     }
-    #celebration p { color: #f7c59f; font-size: 1.3rem; margin-top: 20px; }
+    #celebration .cel-ring { font-size: clamp(2.5rem, 10vw, 4rem); margin: 16px 0 0; }
+    #celebration p { color: #f7c59f; font-size: clamp(1rem, 4.5vw, 1.3rem); margin-top: 16px; }
     #celebration .confetti-area { position: fixed; inset: 0; pointer-events: none; }
     .conf-piece {
-      position: absolute; width: 10px; height: 10px;
-      border-radius: 2px; animation: fallConf 3s ease-in forwards;
+      position: absolute; border-radius: 2px;
+      animation: fallConf 3s ease-in forwards;
     }
     @keyframes fallConf {
       0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    #cel-close {
+      margin-top: 36px;
+      background: linear-gradient(135deg, #e63462, #ff6b9d);
+      color: #fff; border: none;
+      padding: clamp(12px,4vw,14px) clamp(28px,8vw,36px);
+      border-radius: 50px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1rem, 4.5vw, 1.1rem); font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     /* ─── Progress bar ─── */
@@ -247,32 +348,52 @@
 
     /* ─── Nav dots ─── */
     #nav-dots {
-      position: fixed; right: 20px; top: 50%;
+      position: fixed; right: max(14px, env(safe-area-inset-right, 14px)); top: 50%;
       transform: translateY(-50%); z-index: 100;
-      display: flex; flex-direction: column; gap: 12px;
+      display: flex; flex-direction: column; gap: 14px;
     }
     .nav-dot {
-      width: 10px; height: 10px; border-radius: 50%;
+      width: 11px; height: 11px; border-radius: 50%;
       background: rgba(255,107,157,.4); cursor: pointer;
       transition: background .3s, transform .3s;
+      /* bigger touch target */
+      padding: 6px; box-sizing: content-box;
+      margin: -6px;
     }
-    .nav-dot.active { background: #ff6b9d; transform: scale(1.4); }
+    .nav-dot::after {
+      content: attr(data-label);
+      position: absolute; right: 26px;
+      font-size: .7rem; color: rgba(255,107,157,.7);
+      white-space: nowrap; opacity: 0;
+      transition: opacity .2s;
+      pointer-events: none;
+    }
+    .nav-dot:hover::after,
+    .nav-dot.active::after { opacity: 1; }
+    .nav-dot.active { background: #ff6b9d; transform: scale(1.5); }
 
-    /* ─── Song note ─── */
+    /* ─── Music / Heart rain button ─── */
     #music-note {
-      position: fixed; bottom: 24px; left: 24px;
-      font-size: 1.8rem; z-index: 100; cursor: pointer;
-      animation: spin 4s linear infinite; filter: drop-shadow(0 0 8px #ff6b9d);
+      position: fixed;
+      bottom: max(24px, env(safe-area-inset-bottom, 24px));
+      left: max(20px, env(safe-area-inset-left, 20px));
+      font-size: 2rem; z-index: 100; cursor: pointer;
+      animation: spin 4s linear infinite;
+      filter: drop-shadow(0 0 8px #ff6b9d);
+      -webkit-tap-highlight-color: transparent;
+      /* big tap target */
+      padding: 10px; margin: -10px;
     }
     @keyframes spin {
       0%   { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    #music-note.paused { animation-play-state: paused; }
   </style>
 </head>
 <body>
 
-<!-- Cursor -->
+<!-- Cursor (desktop) -->
 <div id="cursor"></div>
 
 <!-- Progress bar -->
@@ -280,15 +401,15 @@
 
 <!-- Nav dots -->
 <div id="nav-dots">
-  <div class="nav-dot active" onclick="scrollTo('hero')"></div>
-  <div class="nav-dot" onclick="scrollTo('story')"></div>
-  <div class="nav-dot" onclick="scrollTo('reasons')"></div>
-  <div class="nav-dot" onclick="scrollTo('gallery')"></div>
-  <div class="nav-dot" onclick="scrollTo('question')"></div>
+  <div class="nav-dot active" data-label="Home"    onclick="goTo('hero')"></div>
+  <div class="nav-dot"        data-label="Story"   onclick="goTo('story')"></div>
+  <div class="nav-dot"        data-label="Reasons" onclick="goTo('reasons')"></div>
+  <div class="nav-dot"        data-label="Gallery" onclick="goTo('gallery')"></div>
+  <div class="nav-dot"        data-label="Propose" onclick="goTo('question')"></div>
 </div>
 
 <!-- Music note -->
-<div id="music-note" title="Toggle music vibe ♪">🎵</div>
+<div id="music-note" title="Heart rain ♪">🎵</div>
 
 <!-- Starfield -->
 <canvas id="starfield"></canvas>
@@ -311,7 +432,7 @@
       I tried to pretend it wasn't happening. But there you were — your laugh, your eyes, your way of making even
       the simplest moments feel magical — and I knew. I just <em>knew</em>.
       <br/><br/>
-      Munnu has been smiling a little wider ever since.
+      Munnu has been smiling a little wider ever since. ✨
     </p>
   </div>
 </section>
@@ -323,10 +444,10 @@
     <div class="reason-card"><div class="icon">😊</div><p>Your smile lights up every room — and my heart.</p></div>
     <div class="reason-card"><div class="icon">🌙</div><p>Late night talks with you feel like home.</p></div>
     <div class="reason-card"><div class="icon">💫</div><p>You make the ordinary feel extraordinary.</p></div>
-    <div class="reason-card"><div class="icon">🌸</div><p>Your kindness is the most beautiful thing I've ever seen.</p></div>
+    <div class="reason-card"><div class="icon">🌸</div><p>Your kindness is the most beautiful thing I've seen.</p></div>
     <div class="reason-card"><div class="icon">🎵</div><p>Every song reminds me of you.</p></div>
     <div class="reason-card"><div class="icon">🍃</div><p>With you, even silence feels peaceful.</p></div>
-    <div class="reason-card"><div class="icon">🌟</div><p>You inspire me to be a better person every day.</p></div>
+    <div class="reason-card"><div class="icon">🌟</div><p>You inspire me to be better every single day.</p></div>
     <div class="reason-card"><div class="icon">💖</div><p>You are my favourite reason to smile.</p></div>
   </div>
 </section>
@@ -334,26 +455,32 @@
 <!-- ═══════════════════ GALLERY ═══════════════════ -->
 <section id="gallery">
   <h2>Our little universe</h2>
-  <div class="gallery-track">
-    <div class="memory-card"><div class="mem-emoji">☕</div><h3>First Chai Together</h3><p>That rainy afternoon when everything felt perfect.</p></div>
-    <div class="memory-card"><div class="mem-emoji">🌅</div><h3>Sunsets</h3><p>Every sunset is better when shared with you.</p></div>
-    <div class="memory-card"><div class="mem-emoji">🎂</div><h3>Your Birthday</h3><p>The day the universe did something right — it made you.</p></div>
-    <div class="memory-card"><div class="mem-emoji">🌹</div><h3>That One Day</h3><p>You wore red and I forgot how to speak.</p></div>
-    <div class="memory-card"><div class="mem-emoji">🌙</div><h3>Midnight Talks</h3><p>Hours felt like minutes whenever we talked.</p></div>
-    <div class="memory-card"><div class="mem-emoji">🎶</div><h3>Our Song</h3><p>The one that plays and makes me think of you instantly.</p></div>
+  <div class="gallery-wrapper">
+    <div class="gallery-track" id="gallery-track">
+      <div class="memory-card"><div class="mem-emoji">☕</div><h3>First Chai Together</h3><p>That rainy afternoon when everything felt perfect.</p></div>
+      <div class="memory-card"><div class="mem-emoji">🌅</div><h3>Sunsets</h3><p>Every sunset is better when shared with you.</p></div>
+      <div class="memory-card"><div class="mem-emoji">🎂</div><h3>Your Birthday</h3><p>The day the universe did something right — it made you.</p></div>
+      <div class="memory-card"><div class="mem-emoji">🌹</div><h3>That One Day</h3><p>You wore red and I forgot how to speak.</p></div>
+      <div class="memory-card"><div class="mem-emoji">🌙</div><h3>Midnight Talks</h3><p>Hours felt like minutes whenever we talked.</p></div>
+      <div class="memory-card"><div class="mem-emoji">🎶</div><h3>Our Song</h3><p>The one that plays and makes me think of you instantly.</p></div>
+    </div>
+    <div class="swipe-hint">← swipe to explore →</div>
+    <div class="gallery-dots" id="gallery-dots"></div>
   </div>
 </section>
 
 <!-- ═══════════════════ THE QUESTION ═══════════════════ -->
 <section id="question">
+  <div class="q-ring">💍</div>
   <p class="q-title">Tinu ji...</p>
   <p class="q-subtitle">
-    Munnu has been holding this in for a while 🥺<br/>
-    <strong>Will you be my girlfriend?</strong>
+    I love you so much 🥺<br/>
+    More than all the stars in that sky above. 💫<br/>
+    <strong>Will you please marry me?</strong>
   </p>
   <div class="answer-btns">
-    <button class="btn-yes" id="btn-yes" onclick="celebrate()">💖 Yes, of course!</button>
-    <button class="btn-no" id="btn-no">🙈 No way...</button>
+    <button class="btn-yes" id="btn-yes" onclick="celebrate()">💖 Yes, I will!</button>
+    <button class="btn-no"  id="btn-no">🙈 No way...</button>
   </div>
 </section>
 
@@ -361,50 +488,90 @@
 <div id="celebration">
   <div class="confetti-area" id="confetti-area"></div>
   <h1>She said YES! 🎉</h1>
+  <div class="cel-ring">💍</div>
   <p>Tinu ji + Munnu = 💕 forever &amp; always</p>
-  <p style="margin-top:12px;font-size:1rem;color:#f0d0e8;">You've made the happiest man in the world even happier. ✨</p>
-  <button onclick="document.getElementById('celebration').classList.remove('show')"
-    style="margin-top:40px;background:linear-gradient(135deg,#e63462,#ff6b9d);color:#fff;border:none;padding:14px 36px;border-radius:50px;font-family:'Quicksand',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;">
-    Start our story 💌
+  <p style="margin-top:10px;font-size:clamp(.85rem,3.5vw,1rem);color:#f0d0e8;">
+    You've just made Munnu the happiest person alive. ✨
+  </p>
+  <button id="cel-close" onclick="document.getElementById('celebration').classList.remove('show')">
+    Start our forever 💌
   </button>
 </div>
 
 <script>
-  /* ── Cursor ── */
-  const cursor = document.getElementById('cursor');
-  let mx = 0, my = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top  = my + 'px';
-  });
-  document.querySelectorAll('button, .reason-card, .memory-card, .nav-dot, #music-note').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
-  });
+  /* ════════════════════════════════
+     DEVICE DETECTION
+  ════════════════════════════════ */
+  const isTouch = window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
 
-  /* ── Click hearts ── */
-  document.addEventListener('click', e => {
-    if (e.target.closest('button, .nav-dot, #music-note')) return;
-    spawnHeart(e.clientX, e.clientY);
-  });
+  /* ════════════════════════════════
+     DESKTOP CURSOR
+  ════════════════════════════════ */
+  if (!isTouch) {
+    const cursor = document.getElementById('cursor');
+    cursor.style.display = 'block';
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.querySelectorAll('button, .reason-card, .memory-card, .nav-dot, #music-note').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+  }
+
+  /* ════════════════════════════════
+     SPAWN HEART
+  ════════════════════════════════ */
   function spawnHeart(x, y) {
     const h = document.createElement('div');
     h.className = 'float-heart';
-    h.textContent = ['💖','💕','💗','💓','🌸','✨'][Math.floor(Math.random()*6)];
-    h.style.left = x + 'px'; h.style.top = y + 'px';
+    h.textContent = ['💖','💕','💗','💓','🌸','✨','💍'][Math.floor(Math.random()*7)];
+    h.style.left = x + 'px';
+    h.style.top  = y + 'px';
+    h.style.fontSize = (16 + Math.random() * 14) + 'px';
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 4200);
   }
 
-  /* ── Starfield ── */
+  /* ════════════════════════════════
+     TAP RIPPLE (mobile)
+  ════════════════════════════════ */
+  function spawnRipple(x, y) {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    const size = 60;
+    r.style.cssText = `width:${size}px;height:${size}px;left:${x - size/2}px;top:${y - size/2}px;`;
+    document.body.appendChild(r);
+    setTimeout(() => r.remove(), 700);
+  }
+
+  /* ════════════════════════════════
+     CLICK / TOUCH → HEARTS + RIPPLE
+  ════════════════════════════════ */
+  document.addEventListener('click', e => {
+    if (e.target.closest('button, .nav-dot, #music-note')) return;
+    spawnHeart(e.clientX, e.clientY);
+  });
+
+  // Touch events for mobile heart bursts
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    if (e.target.closest('button, .nav-dot, #music-note')) return;
+    spawnRipple(t.clientX, t.clientY);
+    spawnHeart(t.clientX, t.clientY);
+  }, { passive: true });
+
+  /* ════════════════════════════════
+     STARFIELD
+  ════════════════════════════════ */
   const canvas = document.getElementById('starfield');
   const ctx = canvas.getContext('2d');
   let stars = [];
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-    stars = Array.from({length: 160}, () => ({
+    stars = Array.from({ length: 160 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       r: Math.random() * 1.5 + .3,
@@ -420,7 +587,7 @@
       s.a += s.sp;
       if (s.a > 1) { s.a = 0; s.x = Math.random() * canvas.width; s.y = Math.random() * canvas.height; }
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(255,200,230,${Math.abs(Math.sin(s.a * Math.PI))})`;
       ctx.fill();
     });
@@ -428,99 +595,157 @@
   }
   drawStars();
 
-  /* ── Scroll reveal ── */
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: .15 });
-  document.querySelectorAll('.story-card, .reason-card').forEach(el => observer.observe(el));
+  /* ════════════════════════════════
+     SCROLL REVEAL
+  ════════════════════════════════ */
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: .12 });
+  document.querySelectorAll('.story-card, .reason-card').forEach(el => revealObserver.observe(el));
 
-  /* ── Staggered reason cards ── */
+  // Stagger reason cards
   document.querySelectorAll('.reason-card').forEach((card, i) => {
     card.style.transitionDelay = (i * .08) + 's';
   });
 
-  /* ── Progress bar ── */
+  /* ════════════════════════════════
+     PROGRESS BAR + NAV DOTS
+  ════════════════════════════════ */
+  const sectionIds = ['hero','story','reasons','gallery','question'];
   window.addEventListener('scroll', () => {
     const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
     document.getElementById('progress-bar').style.width = pct + '%';
     updateNavDots();
-  });
+  }, { passive: true });
 
-  /* ── Nav dots ── */
-  const sections = ['hero','story','reasons','gallery','question'];
   function updateNavDots() {
     const dots = document.querySelectorAll('.nav-dot');
-    sections.forEach((id, i) => {
+    sectionIds.forEach((id, i) => {
       const el = document.getElementById(id);
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      if (rect.top <= window.innerHeight/2 && rect.bottom >= window.innerHeight/2) {
+      if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
         dots.forEach(d => d.classList.remove('active'));
-        dots[i] && dots[i].classList.add('active');
+        if (dots[i]) dots[i].classList.add('active');
       }
     });
   }
-  function scrollTo(id) {
+
+  function goTo(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
   }
 
-  /* ── Runaway "No" button ── */
+  /* ════════════════════════════════
+     GALLERY DOTS
+  ════════════════════════════════ */
+  const track = document.getElementById('gallery-track');
+  const cards = track.querySelectorAll('.memory-card');
+  const dotsContainer = document.getElementById('gallery-dots');
+  cards.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => {
+      cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    };
+    dotsContainer.appendChild(d);
+  });
+  track.addEventListener('scroll', () => {
+    const w = track.clientWidth;
+    const idx = Math.round(track.scrollLeft / (cards[0].offsetWidth + 16));
+    dotsContainer.querySelectorAll('.gallery-dot').forEach((d, i) =>
+      d.classList.toggle('active', i === idx));
+  }, { passive: true });
+
+  /* ════════════════════════════════
+     RUNAWAY "NO" BUTTON
+     – mouseenter on desktop
+     – touchstart on mobile (button jumps)
+  ════════════════════════════════ */
   const btnNo = document.getElementById('btn-no');
   let tries = 0;
-  btnNo.addEventListener('mouseenter', () => {
-    if (tries >= 5) return;
+
+  function runawayNo() {
+    if (tries >= 6) return;
     tries++;
-    const vw = window.innerWidth - 200, vh = window.innerHeight - 80;
+    const vw = window.innerWidth  - btnNo.offsetWidth  - 20;
+    const vh = window.innerHeight - btnNo.offsetHeight - 20;
     btnNo.style.position = 'fixed';
-    btnNo.style.left = Math.random() * vw + 'px';
-    btnNo.style.top  = Math.random() * vh + 'px';
-    if (tries >= 5) {
-      btnNo.textContent = '😭 Fine... maybe yes!';
-      btnNo.style.color = '#ff6b9d';
+    btnNo.style.zIndex   = '200';
+    btnNo.style.left     = Math.max(10, Math.random() * vw) + 'px';
+    btnNo.style.top      = Math.max(60, Math.random() * vh) + 'px';
+
+    // Shake feedback
+    btnNo.classList.remove('shaking');
+    void btnNo.offsetWidth; // reflow
+    btnNo.classList.add('shaking');
+
+    if (tries === 3)  btnNo.textContent = '😅 Stop chasing me!';
+    if (tries === 5)  btnNo.textContent = '😭 Okay fine...';
+    if (tries >= 6) {
+      btnNo.textContent = '💍 Okay YES!!';
+      btnNo.style.color  = '#ff6b9d';
+      btnNo.style.border = '2px solid #ff6b9d';
     }
-  });
+  }
+
+  btnNo.addEventListener('mouseenter', runawayNo);
+  btnNo.addEventListener('touchstart', e => {
+    e.preventDefault();
+    runawayNo();
+  }, { passive: false });
   btnNo.addEventListener('click', () => {
-    if (tries >= 5) celebrate();
+    if (tries >= 6) celebrate();
   });
 
-  /* ── Music note ── */
+  /* ════════════════════════════════
+     MUSIC / HEART RAIN BUTTON
+  ════════════════════════════════ */
   let musicOn = false;
+  let heartRainInterval = null;
   document.getElementById('music-note').addEventListener('click', () => {
     musicOn = !musicOn;
-    document.getElementById('music-note').style.animationPlayState = musicOn ? 'running' : 'paused';
-    // Spawn floating hearts when music "plays"
+    const note = document.getElementById('music-note');
+    note.classList.toggle('paused', !musicOn);
     if (musicOn) {
-      const interval = setInterval(() => {
-        if (!musicOn) { clearInterval(interval); return; }
-        spawnHeart(Math.random() * window.innerWidth, window.innerHeight);
-      }, 600);
+      heartRainInterval = setInterval(() => {
+        spawnHeart(Math.random() * window.innerWidth, window.innerHeight * .9);
+        spawnHeart(Math.random() * window.innerWidth, window.innerHeight * .9);
+      }, 400);
+    } else {
+      clearInterval(heartRainInterval);
     }
   });
 
-  /* ── Celebration ── */
+  /* ════════════════════════════════
+     CELEBRATION
+  ════════════════════════════════ */
   function celebrate() {
     document.getElementById('celebration').classList.add('show');
     const area = document.getElementById('confetti-area');
     area.innerHTML = '';
-    const colors = ['#ff6b9d','#e63462','#f7c59f','#fff','#c084fc','#fb923c'];
-    for (let i = 0; i < 100; i++) {
+    const colors = ['#ff6b9d','#e63462','#f7c59f','#fff','#c084fc','#fb923c','#fde68a'];
+    for (let i = 0; i < 120; i++) {
       const p = document.createElement('div');
       p.className = 'conf-piece';
-      p.style.left = Math.random() * 100 + 'vw';
-      p.style.top  = '-20px';
-      p.style.background = colors[Math.floor(Math.random() * colors.length)];
-      p.style.animationDelay = Math.random() * 2 + 's';
-      p.style.animationDuration = (2 + Math.random() * 2) + 's';
-      p.style.width  = (8 + Math.random() * 10) + 'px';
-      p.style.height = (8 + Math.random() * 10) + 'px';
+      p.style.left             = Math.random() * 100 + 'vw';
+      p.style.top              = '-20px';
+      p.style.background       = colors[Math.floor(Math.random() * colors.length)];
+      p.style.animationDelay   = Math.random() * 2.5 + 's';
+      p.style.animationDuration= (2 + Math.random() * 2) + 's';
+      p.style.width            = (8 + Math.random() * 10) + 'px';
+      p.style.height           = (8 + Math.random() * 10) + 'px';
+      p.style.borderRadius     = Math.random() > .5 ? '50%' : '2px';
       area.appendChild(p);
     }
-    // Burst hearts
-    for (let i = 0; i < 30; i++) {
-      setTimeout(() => spawnHeart(Math.random() * window.innerWidth, Math.random() * window.innerHeight), i * 100);
+    // Heart burst
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => spawnHeart(
+        Math.random() * window.innerWidth,
+        Math.random() * window.innerHeight * .8
+      ), i * 80);
     }
+    // Vibrate on mobile 💓
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
   }
 </script>
 </body>
